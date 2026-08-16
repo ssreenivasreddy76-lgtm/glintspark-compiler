@@ -25,6 +25,17 @@ const getRunCommand = (language, filepath, binPath = '') => {
         case 'c++':
         case 'cpp17':
             return { cmd: binPath, args: [] };
+        case 'sql':
+        case 'sqlite':
+        case 'sqlite3':
+        case 'postgresql':
+        case 'postgres':
+            // Use sqlite3 in memory to test standard SQL statements
+            return { cmd: 'sh', args: ['-c', `sqlite3 :memory: < ${filepath}`] };
+        case 'html':
+        case 'css':
+            // Dummy return for frontend languages
+            return { cmd: 'echo', args: ['HTML and CSS are executed directly in your browser preview. No backend compilation needed!'] };
         default:
             return null;
     }
@@ -92,7 +103,10 @@ app.post('/execute', async (req, res) => {
         const extMap = {
             'python': 'py', 'python3': 'py',
             'javascript': 'js', 'nodejs': 'js',
-            'java': 'java', 'c': 'c', 'c++': 'cpp', 'cpp17': 'cpp'
+            'java': 'java', 'c': 'c', 'c++': 'cpp', 'cpp17': 'cpp',
+            'sql': 'sql', 'sqlite': 'sql', 'sqlite3': 'sql', 
+            'postgresql': 'sql', 'postgres': 'sql',
+            'html': 'html', 'css': 'css'
         };
 
         const ext = extMap[language.toLowerCase()];

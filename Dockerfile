@@ -1,11 +1,13 @@
 # Start with the official Node.js 18 image (Debian-based)
 FROM node:18-bullseye-slim
 
-# Install compilation dependencies: Python3, GCC/G++ (for C/C++), and OpenJDK 17 (for Java)
+# Install compilation dependencies: Python3, GCC/G++ (for C/C++), OpenJDK 17 (for Java), sqlite3 and postgresql-client (for SQL)
 RUN apt-get update && apt-get install -y \
     python3 \
     build-essential \
     default-jdk \
+    sqlite3 \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory for the application
