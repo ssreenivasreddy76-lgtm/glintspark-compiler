@@ -73,8 +73,17 @@ const executeProcess = (cmd, args, stdin, timeoutMs) => {
         proc.stderr.on('data', (data) => { stderr += data.toString(); });
 
         if (stdin) {
-            proc.stdin.write(stdin);
-            proc.stdin.end();
+            proc.stdin.on('error', (err) => {
+                if (err.code !== 'EPIPE' && err.code !== 'EOF') {
+                    console.error('Stdin error:', err);
+                }
+            });
+            try {
+                proc.stdin.write(stdin);
+                proc.stdin.end();
+            } catch (err) {
+                // Ignore synchronous write errors like EPIPE
+            }
         }
 
         proc.on('close', (code) => {
